@@ -76,6 +76,8 @@ fun test() {
     val fin = System.currentTimeMillis()
     assert(abs(fin - start) < idleTimeoutSeconds + 500)
     assert(abs(fin- start) > idleTimeoutSeconds - 500)
+    println("server Frames: ${serverFrames.toList()}")
+    println("client Frames: ${clientFrames.toList()}")
     vertx.close()
 }
 
@@ -93,6 +95,7 @@ class TestWebSocketServer(val port: Int, val idleTimeoutSeconds: Int, val countD
             }
             webSocket.closeHandler {
                 isClosed.set(false)
+                countDownLatch.countDown()
             }
         }.listen(port)
         startFuture.complete()
@@ -122,6 +125,7 @@ class TestWebSocketClient(val port: Int, val idleTimeoutSeconds: Int, val countD
             }
             webSocket.closeHandler {
                 isClosed.set(true)
+                countDownLatch.countDown()
             }
             startFuture.complete()
         })

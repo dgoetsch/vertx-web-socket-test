@@ -6,5 +6,5 @@ dependencies {
   compile project(':web-socket-client'), project(':web-socket-server')
 }
 run {
-//  args = ["client=tyrus", "server=vertx"]
+//  args = ["client=vertx", "server=vertx"]
 }
