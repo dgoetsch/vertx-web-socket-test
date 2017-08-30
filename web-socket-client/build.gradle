@@ -1,0 +1,12 @@
+apply plugin: "application"
+
+mainClassName = "dev.yn.playground.web.socket.client.AppKt"
+
+dependencies {
+  compile group: 'org.glassfish.tyrus', name: 'tyrus-client', version: '1.13.1'
+  compile group: 'org.glassfish.tyrus', name: 'tyrus-container-grizzly-client', version: '1.13.1'
+}
+
+run {
+  args = ["vertx"]
+}

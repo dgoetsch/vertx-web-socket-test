@@ -1,0 +1,6 @@
+.idea/
+.gradle/
+build/
+*/build/
+http/sets/
+http/cards

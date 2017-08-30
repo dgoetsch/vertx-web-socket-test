@@ -1,0 +1,2 @@
+include 'web-socket-client', 'web-socket-server', 'web-socket-unified'
+rootProject.name = "vertx-web-socket-test"

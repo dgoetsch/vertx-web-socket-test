@@ -1,0 +1,10 @@
+apply plugin: "application"
+
+mainClassName = "dev.yn.playground.web.socket.AppKt"
+
+dependencies {
+  compile project(':web-socket-client'), project(':web-socket-server')
+}
+run {
+//  args = ["client=tyrus", "server=vertx"]
+}
