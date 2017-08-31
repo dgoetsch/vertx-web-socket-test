@@ -25,9 +25,10 @@ class WebSocketClient(val port: Int, val name: String): AbstractVerticle() {
             println("[$name] writing to server")
             webSocket.writeTextMessage("Message to start!")
 
-            webSocket.frameHandler {
-                println("[$name] received frame: $it")
-            }
+//            webSocket.pingHandler {
+//                println("[$name] received ping, writing with pong")
+//                webSocket.writePong(it)
+//            }
         })
 
     }

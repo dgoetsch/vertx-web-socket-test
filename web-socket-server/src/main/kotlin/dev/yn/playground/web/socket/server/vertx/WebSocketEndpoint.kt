@@ -2,12 +2,10 @@ package dev.yn.playground.web.socket.server.vertx
 
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
+import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpServerOptions
 import io.vertx.core.http.ServerWebSocket
 import java.util.*
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
 
 class WebSocketServer(val port: Int): AbstractVerticle() {
 
@@ -28,7 +26,33 @@ class WebSocketServer(val port: Int): AbstractVerticle() {
             webSocket.closeHandler {
                 println("closing $context")
             }
+            webSocket.pongHandler {
+                println("[$context] Received Pong")
+                resetTimer {
+                    cancelPeriodicPing()
+                    webSocket.close()
+                }
+            }
+            resetPeriodic {
+                println("[$context] Send Ping")
+                webSocket.writePing(Buffer.buffer("ping"))
+            }
         }.listen(port)
+    }
+
+    var timerId: Long? = null
+    var periodicId: Long? = null
+    private fun resetTimer(close: () -> Unit) = synchronized(this) {
+        timerId?.let { vertx.cancelTimer(it) }
+        timerId = vertx.setTimer(2000L, { close() } )
+    }
+
+    private fun resetPeriodic(sendPing: () -> Unit) = synchronized(this) {
+        periodicId?.let { vertx.cancelTimer(it) }
+        periodicId = vertx.setPeriodic(1000L, { sendPing() })
+    }
+    private fun cancelPeriodicPing() = synchronized(this) {
+        periodicId?.let { vertx.cancelTimer(it) }
     }
 
     fun respond(context: UUID, message: String, webSocket: ServerWebSocket) {
